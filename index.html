@@ -58,9 +58,9 @@ function exportCSV() {
 
   const rows = students.map((s, i) => [
     i + 1,
-    "${s.name}",
-    "${s.rollNo}",
-    "${s.regNo}",
+    `="${s.name}"`,
+    s.rollNo,
+    s.regNo,
     `="${s.aadhaar}"`,   // FIX: keeps Aadhaar as text in Excel
     s.cgpa
   ].join(','));

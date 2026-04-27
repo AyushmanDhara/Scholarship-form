@@ -14,7 +14,7 @@ body{font-family:Arial,sans-serif;background:#0b1220;color:#fff;padding:20px} .w
 <input id="fullName" placeholder="Full Name">
 <input id="rollNo" placeholder="Roll No">
 <input id="regNo" placeholder="Registration No">
-<input id="rollNo" placeholder="Aadhaar (12 digit)" maxlength="12">
+<input id="aadhaar" placeholder="Aadhaar (12 digit)" maxlength="12">
 </div>
 <input id="cgpa" placeholder="CGPA" type="number" step="0.01" min="0" max="10">
 <button onclick="submitStudent()">Add Student</button>
@@ -48,7 +48,7 @@ function renderTable(){
 function exportCSV(){
  if(!students.length){alert('No data');return;}
  let csv='S.No,Full Name,Roll No,Reg No,Aadhaar,CGPA\n';
- students.forEach((s,i)=>csv += `${i+1},"${s.name}","${s.roll}","${s.reg}","${s.aadhaar}",${s.cgpa}\n`);
+ students.forEach((s,i)=>csv += `${i+1},"${s.name}","${s.roll}","${s.reg}",'="${s.aadhaar}"',${s.cgpa}\n`);
  const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='students.csv'; a.click();
 }
 aadhaar.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,12)});

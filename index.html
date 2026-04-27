@@ -48,7 +48,7 @@ function renderTable(){
 function exportCSV(){
  if(!students.length){alert('No data');return;}
  let csv='S.No,Full Name,Roll No,Reg No,Aadhaar,CGPA\n';
- students.forEach((s,i)=>csv += `${i+1},"${s.name}","${s.roll}","${s.reg}",'="${s.aadhaar}"',${s.cgpa}\n`);
+ students.forEach((s,i)=>csv += `${i+1},"${s.name}","${s.roll}","${s.reg}","\t"+s.aadhaar,${s.cgpa}\n`);
  const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='students.csv'; a.click();
 }
 aadhaar.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,12)});

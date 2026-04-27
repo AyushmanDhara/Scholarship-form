@@ -1,1 +1,58 @@
-imde
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Information System</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0b1220;color:#fff;padding:20px} .wrap{max-width:900px;margin:auto} input{padding:10px;margin:6px;width:100%;box-sizing:border-box} button{padding:10px 14px;margin:6px;cursor:pointer} table{width:100%;border-collapse:collapse;margin-top:20px} th,td{border:1px solid #334;padding:8px;text-align:left} .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Student Information System</h1>
+<div class="row">
+<input id="fullName" placeholder="Full Name">
+<input id="rollNo" placeholder="Roll No">
+<input id="regNo" placeholder="Registration No">
+<input id="aadhaar" placeholder="Aadhaar (12 digit)" maxlength="12">
+</div>
+<input id="cgpa" placeholder="CGPA" type="number" step="0.01" min="0" max="10">
+<button onclick="submitStudent()">Add Student</button>
+<button onclick="exportCSV()">Export CSV</button>
+<button onclick="clearAll()">Clear All</button>
+<p>Total Students: <span id="total">0</span></p>
+<table>
+<thead><tr><th>#</th><th>Name</th><th>Roll</th><th>Reg</th><th>Aadhaar</th><th>CGPA</th><th>Action</th></tr></thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+<script>
+let students = JSON.parse(localStorage.getItem('students')) || [];
+function saveStudents(){localStorage.setItem('students',JSON.stringify(students));}
+function submitStudent(){
+ const name=fullName.value.trim(), roll=rollNo.value.trim(), reg=regNo.value.trim(), aad=aadhaar.value.trim(), cg=cgpa.value;
+ if(!name||!roll||!reg||!/^[0-9]{12}$/.test(aad)||cg===''||cg<0||cg>10){alert('Enter valid data');return;}
+ students.push({id:Date.now(),name,roll,reg,aadhaar:aad,cgpa:Number(cg).toFixed(2)});
+ saveStudents(); renderTable();
+ fullName.value=rollNo.value=regNo.value=aadhaar.value=cgpa.value='';
+}
+function deleteStudent(id){students=students.filter(x=>x.id!==id);saveStudents();renderTable();}
+function clearAll(){students=[];localStorage.removeItem('students');renderTable();}
+function renderTable(){
+ tableBody.innerHTML='';
+ students.forEach((s,i)=>{
+  tableBody.innerHTML += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.roll}</td><td>${s.reg}</td><td>${s.aadhaar}</td><td>${s.cgpa}</td><td><button onclick="deleteStudent(${s.id})">Delete</button></td></tr>`;
+ });
+ total.textContent=students.length;
+}
+function exportCSV(){
+ if(!students.length){alert('No data');return;}
+ let csv='S.No,Full Name,Roll No,Reg No,Aadhaar,CGPA\n';
+ students.forEach((s,i)=>csv += `${i+1},"${s.name}","${s.roll}","${s.reg}","${s.aadhaar}",${s.cgpa}\n`);
+ const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='students.csv'; a.click();
+}
+aadhaar.addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,12)});
+renderTable();
+</script>
+</body>
+</html>
